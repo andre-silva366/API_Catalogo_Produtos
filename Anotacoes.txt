@@ -1,0 +1,5 @@
+﻿// api/produtos/primeiro
+    //[HttpGet("/primeiro")] // => ignora o api/produtos
+    //[HttpGet("teste")]     // => adiciona api/produtos/teste
+    //[HttpGet("primeiro")]  // => adiciona api/produtos/primeiro
+    [HttpGet("{valor:alpha}")]  // => só aceita valores numericos e de A/a a Z/z
