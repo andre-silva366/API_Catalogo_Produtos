@@ -12,9 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Trantando a referencia ciclica
+// Tratando a referencia ciclica
 builder.Services.AddControllers().AddJsonOptions(options =>
-options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles) ;
+options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+// Adicionando o pacote Json Patch
+.AddNewtonsoftJson();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
