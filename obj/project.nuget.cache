@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "r78n20vOfgchKTU2bXIKIEg8kCAdRKqRKBL+zmTRUsbyMVrumutQ8EyqFKI4kWC1a45d+3RnJRJao3SnIk1bAQ==",
+  "dgSpecHash": "xAc6lW3iWuAiGAq8AdhK/Zbf6vskgBjfqpe/qmcrN+xds9FggwqVX9crr9+HIWAlf+K7Ojnz6FGLMEB+VEmPDw==",
   "success": true,
   "projectFilePath": "D:\\Csharp\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
   "expectedPackageFiles": [
@@ -56,8 +56,8 @@
     "C:\\Users\\andre\\.nuget\\packages\\humanizer.core.zh-cn\\2.14.1\\humanizer.core.zh-cn.2.14.1.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\humanizer.core.zh-hans\\2.14.1\\humanizer.core.zh-hans.2.14.1.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\humanizer.core.zh-hant\\2.14.1\\humanizer.core.zh-hant.2.14.1.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\8.0.4\\microsoft.aspnetcore.jsonpatch.8.0.4.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\8.0.4\\microsoft.aspnetcore.mvc.newtonsoftjson.8.0.4.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\7.0.13\\microsoft.aspnetcore.jsonpatch.7.0.13.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\7.0.13\\microsoft.aspnetcore.mvc.newtonsoftjson.7.0.13.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.3\\microsoft.aspnetcore.openapi.8.0.3.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\6.0.24\\microsoft.aspnetcore.razor.language.6.0.24.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

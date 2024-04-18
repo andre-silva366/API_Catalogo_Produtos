@@ -113,7 +113,7 @@ public class ProdutosController : ControllerBase
         _uof.ProdutoRepository.Update(produto);
         _uof.Commit();
 
-        return Ok(_mapper.Map<ProdutoDTOUpdateResponse>(produtoUpdateRequest));
+        return Ok(_mapper.Map<ProdutoDTOUpdateResponse>(produto));
 
     }
 
