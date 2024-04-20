@@ -5,6 +5,7 @@ using APICatalogo.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace APICatalogo.Controllers;
@@ -67,7 +68,19 @@ public class ProdutosController : ControllerBase
     public ActionResult<IEnumerable<ProdutoDTO>> Get([FromQuery] ProdutosParameters produtosParameters)
     {
         var produtos = _uof.ProdutoRepository.GetProdutos(produtosParameters);
-        var metadata = new
+        return Ok(ObterProdutos(produtos)); ;
+    }
+
+    [HttpGet("filter/preco/pagination")]
+    public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosFilterPreco([FromQuery] ProdutosFiltroPreco produtosFilterParameters)
+    {
+        var produtos = _uof.ProdutoRepository.GetProdutosFiltroPreco(produtosFilterParameters);
+        return Ok(ObterProdutos(produtos));
+    }
+
+    private ActionResult<IEnumerable<ProdutoDTO>> ObterProdutos(PagedList<Produto> produtos)
+    {
+        var metadata =  new
         {
             produtos.TotalCount,
             produtos.PageSize,
@@ -78,14 +91,12 @@ public class ProdutosController : ControllerBase
         };
 
         Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
-
         var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
 
         return Ok(produtosDto);
     }
 
-
-   // api/produtos/id
+    // api/produtos/id
     [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
     public ActionResult<ProdutoDTO>  GetById(int id)
     {
