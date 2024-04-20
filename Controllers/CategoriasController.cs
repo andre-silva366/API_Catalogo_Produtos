@@ -1,8 +1,9 @@
 ﻿using APICatalogo.DTOs;
 using APICatalogo.DTOs.Mappings;
-using APICatalogo.Filters;
+using APICatalogo.Pagination;
 using APICatalogo.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 namespace APICatalogo.Controllers;
 
 [Route("[controller]")]
@@ -10,7 +11,7 @@ namespace APICatalogo.Controllers;
 public class CategoriasController : ControllerBase
 {
     private readonly IUnityOfWork _uof;
-    private readonly ILogger _logger;
+    private readonly ILogger<CategoriasController> _logger;
 
     public CategoriasController(IUnityOfWork uof ,ILogger<CategoriasController> logger)
     {
@@ -19,7 +20,7 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpGet]
-    [ServiceFilter(typeof(ApiLoggingFilter))]
+    //[ServiceFilter(typeof(ApiLoggingFilter))]
     public ActionResult<IEnumerable<CategoriaDTO>> Get()
     {
         var categorias = _uof.CategoriaRepository.GetAll();
@@ -32,11 +33,27 @@ public class CategoriasController : ControllerBase
         return Ok(categoriasDto);
     }
 
-    //[HttpGet("produtos")]
-    //public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
-    //{
-    //    return _repository.GetCategorias().Include(p => p.Produtos).Where(c => c.CategoriaId <= 10).ToList();
-    //}
+    // Pagination
+    [HttpGet("pagination")]
+    public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery] CategoriasParameters categoriasParameters)
+    {
+        var categorias = _uof.CategoriaRepository.GetCategorias(categoriasParameters);
+        var metadata = new
+        {
+            categorias.TotalCount,
+            categorias.PageSize,
+            categorias.CurrentPage,
+            categorias.TotalPages,
+            categorias.HasNext,
+            categorias.HasPrevious
+        };
+
+        Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+        var categoriasDto = categorias.ToCategoriaDTOList();
+
+        return Ok(categoriasDto);
+    }
 
     [HttpGet("{id:int}", Name = "ObterCategoria")]
     public ActionResult<CategoriaDTO> Get(int id)

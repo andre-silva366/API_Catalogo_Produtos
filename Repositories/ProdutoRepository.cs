@@ -10,6 +10,7 @@ public class ProdutoRepository : Repository<Produto>, IProdutoRepository
     public ProdutoRepository(AppDbContext context) : base(context)
     {
     }
+        
 
     public PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters)
     {
@@ -22,6 +23,8 @@ public class ProdutoRepository : Repository<Produto>, IProdutoRepository
 
     public IEnumerable<Produto> GetProdutosPorCategoria(int id)
     {
-        return GetAll().Where(c => c.CategoriaId == id);
+        var p = _context.Set<Produto>().Where(p => p.CategoriaId == id).AsEnumerable();
+        return p;
+        
     }
 }

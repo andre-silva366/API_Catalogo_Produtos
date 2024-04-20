@@ -137,9 +137,9 @@ public class ProdutosController : ControllerBase
         var produtoUpdateRequest = _mapper.Map<ProdutoDTOUpdateRequest>(produto);
 
         // Aplicando as alterações no produto
-        patchProdutoDTO.ApplyTo(produtoUpdateRequest, ModelState);
+        patchProdutoDTO.ApplyTo(produtoUpdateRequest);
 
-        if(!ModelState.IsValid || TryValidateModel(produtoUpdateRequest))
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         _mapper.Map(produtoUpdateRequest, produto);
