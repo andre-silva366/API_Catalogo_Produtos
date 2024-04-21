@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xAc6lW3iWuAiGAq8AdhK/Zbf6vskgBjfqpe/qmcrN+xds9FggwqVX9crr9+HIWAlf+K7Ojnz6FGLMEB+VEmPDw==",
+  "dgSpecHash": "+rO0LMlN0O5Z6Yk8OtXyNJE3rCIG4n0x6w2hd951u5l7jdQNTRryrv6SaOGnEMLjdhYs/ghAuECs5SfbXoMlNw==",
   "success": true,
   "projectFilePath": "D:\\Csharp\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
   "expectedPackageFiles": [
@@ -147,7 +147,9 @@
     "C:\\Users\\andre\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\system.threading.tasks.dataflow\\7.0.0\\system.threading.tasks.dataflow.7.0.0.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\system.windows.extensions\\7.0.0\\system.windows.extensions.7.0.0.nupkg.sha512"
+    "C:\\Users\\andre\\.nuget\\packages\\system.windows.extensions\\7.0.0\\system.windows.extensions.7.0.0.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\x.pagedlist\\9.1.2\\x.pagedlist.9.1.2.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\x.pagedlist.mvc.core\\9.1.2\\x.pagedlist.mvc.core.9.1.2.nupkg.sha512"
   ],
   "logs": []
 }

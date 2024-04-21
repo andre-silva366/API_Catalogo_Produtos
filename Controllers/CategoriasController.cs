@@ -5,6 +5,7 @@ using APICatalogo.Pagination;
 using APICatalogo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using X.PagedList;
 namespace APICatalogo.Controllers;
 
 [Route("[controller]")]
@@ -22,9 +23,9 @@ public class CategoriasController : ControllerBase
 
     [HttpGet]
     //[ServiceFilter(typeof(ApiLoggingFilter))]
-    public ActionResult<IEnumerable<CategoriaDTO>> Get()
+    public async Task< ActionResult<IEnumerable<CategoriaDTO>>> GetAsync()
     {
-        var categorias = _uof.CategoriaRepository.GetAll();
+        var categorias = await _uof.CategoriaRepository.GetAllAsync();
         if (categorias is null)
         {
             return NotFound("Não foram encontradas categorias cadastradas");
@@ -36,22 +37,23 @@ public class CategoriasController : ControllerBase
 
     // Pagination
     [HttpGet("pagination")]
-    public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery] CategoriasParameters categoriasParameters)
+    public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasAsync([FromQuery] CategoriasParameters categoriasParameters)
     {
-        var categorias = _uof.CategoriaRepository.GetCategorias(categoriasParameters);
-        return ObterCategorias(categorias);
+        var categorias = await _uof.CategoriaRepository.GetCategoriasAsync(categoriasParameters);
+        var categoriasDto = categorias.ToCategoriaDTOList().ToList();
+        return categoriasDto;
     }
 
-    private ActionResult<IEnumerable<CategoriaDTO>> ObterCategorias(PagedList<Categoria> categorias)
+    private ActionResult<IEnumerable<CategoriaDTO>> ObterCategorias(IPagedList<Categoria> categorias)
     {
         var metadata = new
         {
-            categorias.TotalCount,
+            categorias.Count,
             categorias.PageSize,
-            categorias.CurrentPage,
-            categorias.TotalPages,
-            categorias.HasNext,
-            categorias.HasPrevious
+            categorias.PageCount,
+            categorias.TotalItemCount,
+            categorias.HasNextPage,
+            categorias.HasPreviousPage
         };
 
         Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
@@ -62,20 +64,21 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpGet("filter/nome/pagination")]
-    public ActionResult<IEnumerable<CategoriaDTO>> GetCategoriasFiltradas([FromQuery] CategoriasFiltroNome categoriasFiltro)
+    public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasFiltradasAsync([FromQuery] CategoriasFiltroNome categoriasFiltro)
     {
-        var categoriasFiltradas = _uof.CategoriaRepository.GetCategoriasFiltroNome(categoriasFiltro);
-
-        return ObterCategorias(categoriasFiltradas);
+        var categoriasFiltradas = await _uof.CategoriaRepository.GetCategoriasFiltroNomeAsync(categoriasFiltro);
+        var categoriasDto = categoriasFiltradas.ToCategoriaDTOList().ToList();
+        return categoriasDto;
 
     }
 
     [HttpGet("{id:int}", Name = "ObterCategoria")]
-    public ActionResult<CategoriaDTO> Get(int id)
+    public async Task<ActionResult<CategoriaDTO>> GetAsync(int id)
     {
-        var categoria = _uof.CategoriaRepository.Get(c => c.CategoriaId == id);
+        var categoria = await _uof.CategoriaRepository.GetAllAsync();
+        var categoriaPorId = categoria.FirstOrDefault(c => c.CategoriaId == id);
 
-        if (categoria is null)
+        if (categoriaPorId is null)
         {
             //_logger.LogInformation($"================================== GET api/categoria/id = {id} NOT FOUND ===============");
             return NotFound("Categoria não encontrada...");
@@ -83,12 +86,12 @@ public class CategoriasController : ControllerBase
         }
 
         // Fazer um mapeamento para retornar uma categoria DTO
-        var categoriaDto = categoria.ToCategoriaDTO();
+        var categoriaDto = categoriaPorId.ToCategoriaDTO();
         return Ok(categoriaDto);
     }
 
     [HttpPost]
-    public ActionResult<CategoriaDTO> Post(CategoriaDTO categoriaDto)
+    public async Task<ActionResult<CategoriaDTO>> PostAsync(CategoriaDTO categoriaDto)
     {
         if (categoriaDto is null)
         {
@@ -98,8 +101,13 @@ public class CategoriasController : ControllerBase
         // Fazer a conversão de categoriaDto para Categoria
         var categoria = categoriaDto.ToCategoria();
 
+        if(categoria is null)
+        {
+            return BadRequest("Dados inválidos...");
+        }
+
         var categoriaCriada = _uof.CategoriaRepository.Create(categoria);
-        _uof.Commit();
+        await _uof.CommitAsync();
 
         var novaCategoriaDto = categoriaCriada.ToCategoriaDTO();
 
@@ -108,26 +116,30 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult<CategoriaDTO> Put(int id, CategoriaDTO categoriaDto)
+    public async Task<ActionResult<CategoriaDTO>> PutAsync(int id, CategoriaDTO categoriaDto)
     {
-        if (id != categoriaDto.CategoriaId)
+        if (id != categoriaDto.CategoriaId )
         {
             return BadRequest();
         }
 
-        var categoriaAtualizada = categoriaDto.ToCategoria();
+        var categoriaAtualizada =  categoriaDto.ToCategoria();
+        if(categoriaAtualizada  is null)
+        {
+            return BadRequest();
+        }
 
         _uof.CategoriaRepository.Update(categoriaAtualizada);
-        _uof.Commit();
+        await _uof.CommitAsync();
 
         var categoriaAtualizadaDto = categoriaAtualizada.ToCategoriaDTO();
         return Ok(categoriaAtualizadaDto);
     }
 
     [HttpDelete("{id:int}")]
-    public ActionResult<CategoriaDTO> Delete(int id)
+    public async Task<ActionResult<CategoriaDTO>> DeleteAsync(int id)
     {
-        var categoria = _uof.CategoriaRepository.Get(c => c.CategoriaId == id);
+        var categoria = await _uof.CategoriaRepository.GetAsync(c => c.CategoriaId == id);
 
         if (categoria is null)
         {
@@ -135,7 +147,7 @@ public class CategoriasController : ControllerBase
         }
 
         var categoriaExcluida = _uof.CategoriaRepository.Delete(categoria);
-        _uof.Commit();
+        await _uof.CommitAsync();
 
         var categoriaExcluidaDto = categoriaExcluida.ToCategoriaDTO();
 

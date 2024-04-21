@@ -236,3 +236,5 @@ D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatc
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
 D:\Csharp\APICatalogo\APICatalogo\obj\Debug\net8.0\APICatalogo.sourcelink.json
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\X.PagedList.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\X.PagedList.Mvc.Core.dll
