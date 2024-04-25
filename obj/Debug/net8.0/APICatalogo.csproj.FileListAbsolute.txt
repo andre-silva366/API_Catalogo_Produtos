@@ -238,3 +238,11 @@ D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
 D:\Csharp\APICatalogo\APICatalogo\obj\Debug\net8.0\APICatalogo.sourcelink.json
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\X.PagedList.dll
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\X.PagedList.Mvc.Core.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

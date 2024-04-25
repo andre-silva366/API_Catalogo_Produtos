@@ -3,6 +3,7 @@ using APICatalogo.DTOs.Mappings;
 using APICatalogo.Models;
 using APICatalogo.Pagination;
 using APICatalogo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using X.PagedList;
@@ -22,7 +23,7 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpGet]
-    //[ServiceFilter(typeof(ApiLoggingFilter))]
+    [Authorize]
     public async Task< ActionResult<IEnumerable<CategoriaDTO>>> GetAsync()
     {
         var categorias = await _uof.CategoriaRepository.GetAllAsync();
@@ -44,24 +45,7 @@ public class CategoriasController : ControllerBase
         return categoriasDto;
     }
 
-    private ActionResult<IEnumerable<CategoriaDTO>> ObterCategorias(IPagedList<Categoria> categorias)
-    {
-        var metadata = new
-        {
-            categorias.Count,
-            categorias.PageSize,
-            categorias.PageCount,
-            categorias.TotalItemCount,
-            categorias.HasNextPage,
-            categorias.HasPreviousPage
-        };
-
-        Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
-
-        var categoriasDto = categorias.ToCategoriaDTOList();
-
-        return Ok(categoriasDto);
-    }
+   
 
     [HttpGet("filter/nome/pagination")]
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasFiltradasAsync([FromQuery] CategoriasFiltroNome categoriasFiltro)
@@ -152,5 +136,24 @@ public class CategoriasController : ControllerBase
         var categoriaExcluidaDto = categoriaExcluida.ToCategoriaDTO();
 
         return Ok(categoriaExcluidaDto);
+    }
+
+    private ActionResult<IEnumerable<CategoriaDTO>> ObterCategorias(IPagedList<Categoria> categorias)
+    {
+        var metadata = new
+        {
+            categorias.Count,
+            categorias.PageSize,
+            categorias.PageCount,
+            categorias.TotalItemCount,
+            categorias.HasNextPage,
+            categorias.HasPreviousPage
+        };
+
+        Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+        var categoriasDto = categorias.ToCategoriaDTOList();
+
+        return Ok(categoriasDto);
     }
 }
