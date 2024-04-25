@@ -4,9 +4,13 @@ using APICatalogo.Extensions;
 using APICatalogo.Filters;
 using APICatalogo.Repositories;
 using APICatalogo.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +27,39 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Incluindo os perfis do Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().
+    AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 // Incluindo o serviço de autenticação e autorização
 builder.Services.AddAuthentication("Bearer").AddJwtBearer();
 builder.Services.AddAuthorization();
+
+// habilita e configura a autenticação jwt bearer na aplicação
+var secretKey = builder.Configuration["JWT:SecretKey"]
+    ?? throw new ArgumentException("invalid secret key!!");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
 
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
