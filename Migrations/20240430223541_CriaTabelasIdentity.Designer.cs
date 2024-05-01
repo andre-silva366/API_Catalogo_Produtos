@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APICatalogo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240425225020_CriaTabelasIdentity")]
+    [Migration("20240430223541_CriaTabelasIdentity")]
     partial class CriaTabelasIdentity
     {
         /// <inheritdoc />
