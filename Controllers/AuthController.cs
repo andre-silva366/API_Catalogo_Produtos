@@ -4,6 +4,7 @@ using APICatalogo.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -17,13 +18,15 @@ public class AuthController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, ILogger<AuthController> logger)
     {
         _tokenService = tokenService;
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -39,8 +42,7 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString(ToString()))
-
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 
 
             };
@@ -80,7 +82,7 @@ public class AuthController : ControllerBase
         if (userExists != null)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new ResponseDTO { Status = "Error", Message = "User already exists!" });
+                new Response { Status = "Error", Message = "User already exists!" });
                         
         }
 
@@ -97,10 +99,10 @@ public class AuthController : ControllerBase
         if(!result.Succeeded)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new ResponseDTO { Status = "Error", Message = "User creation failed!" });
+                new Response { Status = "Error", Message = "User creation failed!" });
         }
 
-        return Ok(new ResponseDTO { Status = "Sucess", Message = "User created successfully!" });
+        return Ok(new Response { Status = "Sucess", Message = "User created successfully!" });
     }
 
     [HttpPost]
@@ -160,6 +162,60 @@ public class AuthController : ControllerBase
         user.RefreshToken = null;
         await _userManager.UpdateAsync(user);
         return NoContent();
+    }
+
+    [HttpPost]
+    [Route("CreateRole")]
+    public async Task<IActionResult> CreateRole(string roleName)
+    {
+        var roleExist = await _roleManager.RoleExistsAsync(roleName);
+        if (!roleExist)
+        {
+            var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+
+            if(roleResult.Succeeded) 
+            {
+                _logger.LogInformation(1, "Roles Added");
+                return StatusCode(StatusCodes.Status200OK,
+                    new Response { Status = "Success", Message = $"Role {roleName} added successfully" }); 
+            }
+            else
+            {
+                _logger.LogInformation(2, "Error");
+                return StatusCode(StatusCodes.Status400BadRequest, 
+                    new Response { Status = "Error", Message = $"Issue adding the new {roleName} role" });
+            }
+        }
+
+        return StatusCode(StatusCodes.Status400BadRequest,
+            new Response { Status = "Error", Message = "Role already exist." });
+    }
+
+    [HttpPost]
+    [Route("AddUserToRole")]
+    public async Task<IActionResult> AddUserToRole(string email, string roleName)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user != null)
+        {
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation(1,$"User {user.Email} added to the {roleName} role");
+                return StatusCode(StatusCodes.Status200OK,
+                    new Response { Status = "Success", Message = $"User {user.Email} added to the {roleName} role" });
+            }
+            else
+            {
+                _logger.LogInformation(1, $"Error: Unable to add user {user.Email} to the {roleName} role");
+
+                return StatusCode(StatusCodes.Status400BadRequest,
+                new Response { Status = "Error", Message = $"Error: Unable to add user {user.Email} to the {roleName} role" });
+            }
+        }
+        return BadRequest(new {error = "Unable to find user"});
     }
 
 }

@@ -24,6 +24,41 @@ options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
 // Adicionando o pacote Json Patch
 .AddNewtonsoftJson();
 
+// Incluindo os perfis do Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
+    AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+
+
+// habilita e configura a autenticação jwt bearer na aplicação
+var secretKey = builder.Configuration["JWT:SecretKey"]
+    ?? throw new ArgumentException("invalid secret key!!");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
+
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -58,41 +93,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Incluindo os perfis do Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
-    AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
 // Incluindo o serviço de autenticação e autorização
 //builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-//builder.Services.AddAuthorization();
-
-// habilita e configura a autenticação jwt bearer na aplicação
-var secretKey = builder.Configuration["JWT:SecretKey"]
-    ?? throw new ArgumentException("invalid secret key!!");
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-    };
-});
-
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAuthorization();
 
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -154,6 +157,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
