@@ -95,7 +95,16 @@ builder.Services.AddSwaggerGen(c =>
 
 // Incluindo o serviço de autenticação e autorização
 //builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-builder.Services.AddAuthorization();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("Admin").RequireClaim("id", "Andre"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+    options.AddPolicy("ExclusiveOnly", policy => policy.RequireAssertion(context => 
+        context.User.HasClaim(claim => claim.Type == "id" && claim.Value == "Andre") || context.User.IsInRole("SuperAdmin")));
+
+});
 
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
