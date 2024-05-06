@@ -17,24 +17,23 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-// Tratando a referencia ciclica
+// Tratando a referencia ciclica -------------------------------------------------------- REFERENCIA CICLICA -----------------------
 builder.Services.AddControllers().AddJsonOptions(options =>
 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
 // Adicionando o pacote Json Patch
 .AddNewtonsoftJson();
 
-// Incluindo os perfis do Identity
+// Incluindo os perfis do Identity ------------------------------------------------------ PERFIS DO IDENTITY -----------------------
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
     AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
 
 
-// habilita e configura a autenticação jwt bearer na aplicação
+// habilita e configura a autenticação jwt bearer na aplicação --------------------------- JWT BEARER -------------------------------
 var secretKey = builder.Configuration["JWT:SecretKey"]
     ?? throw new ArgumentException("invalid secret key!!");
-
+// --------------------------------------------------------------------------------------- ADICIONA AUTENTICAÇÃO -----------------
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -93,9 +92,40 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Habilitando o CORS - Cross Origin Resource Sharing ---------------------------------------------- CORS POLITICA NOMEADA ---------
+// Politica nomeada
+var OrigensComAcessoPermitido = "_origensComAcessoPermitido";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(OrigensComAcessoPermitido,
+        policy =>
+        {
+            policy.WithOrigins("https://apirequest.io")
+            .WithMethods("GET", "POST")
+                .AllowAnyHeader()
+                .AllowCredentials(); 
+        });
+});
+
+// Habilitando o CORS - Cross Origin Resource Sharing ---------------------------------------------- CORS POLITICA PADRÃO -----------
+// Politica padrão
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(
+//        policy =>
+//        {
+//            policy.WithOrigins("https://apirequest.io")
+//                .WithMethods("GET", "POST")
+//                .AllowAnyHeader()
+//                .AllowCredentials();
+//        });
+//});
+
 // Incluindo o serviço de autenticação e autorização
 //builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-
+//  --------------------------------------------------------------------------------------- ADICIONA AUTORIZAÇÃO -----------------
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -166,6 +196,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+
+
+//// Habilitando o CORS - Cross Origin Resource Sharing com politica nomeada
+//app.UseCors(OrigensComAcessoPermitido);
+
+// Habilitando o CORS - Cross Origin Resource Sharing com politica padrão
+app.UseCors();
 
 app.UseAuthentication();
 
