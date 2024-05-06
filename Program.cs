@@ -94,17 +94,16 @@ builder.Services.AddSwaggerGen(c =>
 
 // Habilitando o CORS - Cross Origin Resource Sharing ---------------------------------------------- CORS POLITICA NOMEADA ---------
 // Politica nomeada
-var OrigensComAcessoPermitido = "_origensComAcessoPermitido";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(OrigensComAcessoPermitido,
+    options.AddPolicy("OrigensComAcessoPermitido",
         policy =>
         {
-            policy.WithOrigins("https://apirequest.io")
+            policy.WithOrigins("http://localhost:xxxx")
             .WithMethods("GET", "POST")
-                .AllowAnyHeader()
-                .AllowCredentials(); 
+                .AllowAnyHeader();
+                
         });
 });
 
