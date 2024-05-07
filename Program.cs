@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using APICatalogo.Models;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -135,6 +136,20 @@ builder.Services.AddAuthorization(options =>
 
 });
 
+
+// incluindo Rate Limiting ------------------------------------------------------------------ RATE LIMITING ---------------------
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
+    {
+        options.PermitLimit = 1;
+        options.Window = TimeSpan.FromSeconds(10);
+        options.QueueLimit = 0;
+    });
+    //rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
                                 options.UseMySql(mySqlConnection, 
@@ -200,6 +215,8 @@ app.UseHttpsRedirection();
 
 //// Habilitando o CORS - Cross Origin Resource Sharing com politica nomeada
 //app.UseCors(OrigensComAcessoPermitido);
+
+app.UseRateLimiter();
 
 // Habilitando o CORS - Cross Origin Resource Sharing com politica padrão
 app.UseCors();
