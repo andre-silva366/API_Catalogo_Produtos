@@ -15,6 +15,7 @@ using APICatalogo.Models;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using APICatalogo.RateLimitOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -137,40 +138,58 @@ builder.Services.AddAuthorization(options =>
 
 });
 
+// Ratelimiting usando o json ----------------
+var myOptions = new MyRateLimitOptions();
+builder.Configuration.GetSection(MyRateLimitOptions.MyRateLimit).Bind(myOptions);
 
-// incluindo Rate Limiting ------------------------------------------------------------------ RATE LIMITING ---------------------
+//incluindo Rate Limiting ------------------------------------------------------------------ RATE LIMITING ---------------------
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
     rateLimiterOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
     {
-        options.PermitLimit = 1;
-        options.Window = TimeSpan.FromSeconds(5);
-        options.QueueLimit = 2;
+        options.PermitLimit = myOptions.PermitLimit;
+        options.Window = TimeSpan.FromSeconds(myOptions.Window);
+        options.QueueLimit = myOptions.QueueLimit;
         options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
-    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpcontext =>
-                            RateLimitPartition.GetFixedWindowLimiter(
-                                partitionKey: httpcontext.User.Identity?.Name ??
-                                              httpcontext.Request.Headers.Host.ToString(),
-                                factory: partition => new FixedWindowRateLimiterOptions
-                                {
-                                    AutoReplenishment = true,
-                                    PermitLimit = 5,
-                                    QueueLimit = 0,
-                                    Window = TimeSpan.FromSeconds(10)
-                                }));
-});
+// incluindo Rate Limiting ------------------------------------------------------------------ RATE LIMITING ---------------------
+//builder.Services.AddRateLimiter(rateLimiterOptions =>
+//{
+//    rateLimiterOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
+//    {
+//        options.PermitLimit = 1;
+//        options.Window = TimeSpan.FromSeconds(5);
+//        options.QueueLimit = 2;
+//        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+//    });
+//    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+//});
 
-string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-                                options.UseMySql(mySqlConnection, 
-                                ServerVersion.AutoDetect(mySqlConnection)));
+
+
+//builder.Services.AddRateLimiter(options =>
+//{
+//    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+//    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpcontext =>
+//                            RateLimitPartition.GetFixedWindowLimiter(
+//                                partitionKey: httpcontext.User.Identity?.Name ??
+//                                              httpcontext.Request.Headers.Host.ToString(),
+//                                factory: partition => new FixedWindowRateLimiterOptions
+//                                {
+//                                    AutoReplenishment = true,
+//                                    PermitLimit = 2,
+//                                    QueueLimit = 0,
+//                                    Window = TimeSpan.FromSeconds(10)
+//                                }));
+//});
+
+//string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//                                options.UseMySql(mySqlConnection, 
+//                                ServerVersion.AutoDetect(mySqlConnection)));
 
 // Registrando o serviço de log
 builder.Services.AddScoped<ApiLoggingFilter>();
