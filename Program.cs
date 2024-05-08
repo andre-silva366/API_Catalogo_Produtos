@@ -14,6 +14,7 @@ using System.Text;
 using APICatalogo.Models;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -143,11 +144,13 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
     rateLimiterOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
     {
         options.PermitLimit = 1;
-        options.Window = TimeSpan.FromSeconds(10);
-        options.QueueLimit = 0;
+        options.Window = TimeSpan.FromSeconds(5);
+        options.QueueLimit = 2;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
-    //rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
+
 
 
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
