@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using APICatalogo.RateLimitOptions;
 using Asp.Versioning;
+using APICatalogo.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -189,10 +190,10 @@ rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 //                                }));
 //});
 
-//string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//                                options.UseMySql(mySqlConnection, 
-//                                ServerVersion.AutoDetect(mySqlConnection)));
+string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(options =>
+                                options.UseMySql(mySqlConnection,
+                                ServerVersion.AutoDetect(mySqlConnection)));
 
 // Versionamento da Api ------------------------------------------------------------------------------- VERSIONAMENTO -----------------
 builder.Services.AddApiVersioning(o =>
