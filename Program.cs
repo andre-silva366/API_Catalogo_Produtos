@@ -195,13 +195,29 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                                 options.UseMySql(mySqlConnection,
                                 ServerVersion.AutoDetect(mySqlConnection)));
 
-// Versionamento da Api ------------------------------------------------------------------------------- VERSIONAMENTO -----------------
+//// Versionamento da Api --------------------------------------------------------------------- VERSIONAMENTO PADRÃO QUERY STRING-----------
+//builder.Services.AddApiVersioning(o =>
+//{
+//    o.DefaultApiVersion = new ApiVersion(1, 0);
+//    o.AssumeDefaultVersionWhenUnspecified = true;
+//    o.ReportApiVersions = true;
+
+//}).AddApiExplorer(options =>
+//{
+//    options.GroupNameFormat = "'v'VVV";
+//    options.SubstituteApiVersionInUrl = true;
+//});
+
+// Versionamento da Api --------------------------------------------------------------------- VERSIONAMENTO URI -----------
 builder.Services.AddApiVersioning(o =>
 {
     o.DefaultApiVersion = new ApiVersion(1, 0);
     o.AssumeDefaultVersionWhenUnspecified = true;
     o.ReportApiVersions = true;
-    
+    o.ApiVersionReader = ApiVersionReader.Combine(
+                        new QueryStringApiVersionReader(),
+                        new UrlSegmentApiVersionReader());
+
 }).AddApiExplorer(options =>
 {
     options.GroupNameFormat = "'v'VVV";
