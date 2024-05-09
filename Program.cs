@@ -1,4 +1,4 @@
-using APICatalogo.Context;
+//using APICatalogo.Context;
 using APICatalogo.DTOs.Mappings;
 using APICatalogo.Extensions;
 using APICatalogo.Filters;
@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using APICatalogo.RateLimitOptions;
+using Asp.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +28,9 @@ options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
 .AddNewtonsoftJson();
 
 // Incluindo os perfis do Identity ------------------------------------------------------ PERFIS DO IDENTITY -----------------------
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
-    AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
+//    AddEntityFrameworkStores<AppDbContext>()
+//    .AddDefaultTokenProviders();
 
 
 
@@ -94,6 +95,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
 
 // Habilitando o CORS - Cross Origin Resource Sharing ---------------------------------------------- CORS POLITICA NOMEADA ---------
 // Politica nomeada
@@ -191,6 +194,19 @@ rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 //                                options.UseMySql(mySqlConnection, 
 //                                ServerVersion.AutoDetect(mySqlConnection)));
 
+// Versionamento da Api ------------------------------------------------------------------------------- VERSIONAMENTO -----------------
+builder.Services.AddApiVersioning(o =>
+{
+    o.DefaultApiVersion = new ApiVersion(1, 0);
+    o.AssumeDefaultVersionWhenUnspecified = true;
+    o.ReportApiVersions = true;
+    
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 // Registrando o serviço de log
 builder.Services.AddScoped<ApiLoggingFilter>();
 
@@ -247,14 +263,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
-
 //// Habilitando o CORS - Cross Origin Resource Sharing com politica nomeada
 //app.UseCors(OrigensComAcessoPermitido);
 
 app.UseRateLimiter();
 
-// Habilitando o CORS - Cross Origin Resource Sharing com politica padrão
+
 app.UseCors();
 
 app.UseAuthentication();

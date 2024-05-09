@@ -11,10 +11,12 @@ using Newtonsoft.Json;
 using X.PagedList;
 namespace APICatalogo.Controllers;
 
+[ApiExplorerSettings(IgnoreApi = true)]
 [Route("[controller]")]
 //[EnableCors("OrigensComAcessoPermitido")]
 [ApiController]
-[EnableRateLimiting("fixedwindow")]
+//[EnableRateLimiting("fixedwindow")]
+
 public class CategoriasController : ControllerBase
 {
     private readonly IUnityOfWork _uof;

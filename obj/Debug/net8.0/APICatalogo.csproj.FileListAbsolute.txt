@@ -252,3 +252,7 @@ D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.Identity
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Abstractions.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Http.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Mvc.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Mvc.ApiExplorer.dll
