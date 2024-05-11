@@ -18,6 +18,7 @@ using System.Threading.RateLimiting;
 using APICatalogo.RateLimitOptions;
 using Asp.Versioning;
 using APICatalogo.Context;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +90,11 @@ builder.Services.AddSwaggerGen(c =>
             Url = new Uri("https://macoratti.net/license"),
         }
     });
+
+    // Incluindo comentários XML --------------------------------------------------------------------------- XML ------------------
+
+    var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {

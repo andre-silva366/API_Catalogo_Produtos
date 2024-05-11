@@ -28,6 +28,11 @@ public class CategoriasController : ControllerBase
         _uof = uof;
     }
 
+    /// <summary>
+    /// Obtem uma lista de objetos Categoria
+    /// </summary>
+    /// <returns>Uma lista de objetos Categoria</returns>
+    
     [HttpGet]
     [DisableRateLimiting]
     //[Authorize]
@@ -63,6 +68,12 @@ public class CategoriasController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Obtem uma categoria pelo seu Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Objeto Categoria</returns>
+
     [DisableCors]
     [HttpGet("{id:int}", Name = "ObterCategoria")]
     public async Task<ActionResult<CategoriaDTO>> GetAsync(int id)
@@ -81,6 +92,24 @@ public class CategoriasController : ControllerBase
         var categoriaDto = categoriaPorId.ToCategoriaDTO();
         return Ok(categoriaDto);
     }
+
+    /// <summary>
+    /// Inclui uma nova categoria
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de request:
+    /// 
+    ///     POST api/categorias
+    ///     {
+    ///         "categoriaId": 1,
+    ///         "nome": "categoria1",
+    ///         "imagemUrl": "http://teste.net/1.jpg"
+    ///     }
+    ///     
+    /// </remarks>  
+    /// <param name="categoriaDto">objeto Categoria</param>
+    /// <returns>O objeto categoria incluída</returns>
+    /// <remarks>Retorna um objeto Categoria incluído</remarks>
 
     [HttpPost]
     public async Task<ActionResult<CategoriaDTO>> PostAsync(CategoriaDTO categoriaDto)

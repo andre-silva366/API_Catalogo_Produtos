@@ -256,3 +256,5 @@ D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Abstractions.d
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Http.dll
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Mvc.dll
 D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\Asp.Versioning.Mvc.ApiExplorer.dll
+D:\Csharp\APICatalogo\APICatalogo\bin\Debug\net8.0\APICatalogo.xml
+D:\Csharp\APICatalogo\APICatalogo\obj\Debug\net8.0\APICatalogo.xml
