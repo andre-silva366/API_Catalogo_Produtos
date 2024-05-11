@@ -136,6 +136,8 @@ public class CategoriasController : ControllerBase
             new { id = novaCategoriaDto.CategoriaId }, novaCategoriaDto);
     }
 
+#pragma warning disable CS1591
+
     [HttpPut("{id:int}")]
     public async Task<ActionResult<CategoriaDTO>> PutAsync(int id, CategoriaDTO categoriaDto)
     {
@@ -156,6 +158,7 @@ public class CategoriasController : ControllerBase
         var categoriaAtualizadaDto = categoriaAtualizada.ToCategoriaDTO();
         return Ok(categoriaAtualizadaDto);
     }
+#pragma warning restore CS1591
 
     [HttpDelete("{id:int}")]
     [Authorize(Policy = "AdminOnly")]
