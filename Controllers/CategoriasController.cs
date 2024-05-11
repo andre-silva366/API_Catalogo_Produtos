@@ -16,7 +16,7 @@ namespace APICatalogo.Controllers;
 //[EnableCors("OrigensComAcessoPermitido")]
 [ApiController]
 [EnableRateLimiting("fixedwindow")]
-
+[Produces("application/json")]
 public class CategoriasController : ControllerBase
 {
     private readonly IUnityOfWork _uof;
@@ -73,7 +73,8 @@ public class CategoriasController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns>Objeto Categoria</returns>
-
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [DisableCors]
     [HttpGet("{id:int}", Name = "ObterCategoria")]
     public async Task<ActionResult<CategoriaDTO>> GetAsync(int id)
@@ -111,6 +112,9 @@ public class CategoriasController : ControllerBase
     /// <returns>O objeto categoria incluída</returns>
     /// <remarks>Retorna um objeto Categoria incluído</remarks>
 
+
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPost]
     public async Task<ActionResult<CategoriaDTO>> PostAsync(CategoriaDTO categoriaDto)
     {
