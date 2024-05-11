@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace APICatalogo.Controllers;
 
 //[Route("api/teste")]
+[ApiExplorerSettings (IgnoreApi = true)]
 [Route("api/v{version:apiVersion}/teste")]
 [ApiController]
 [ApiVersion("1.0", Deprecated = true)]

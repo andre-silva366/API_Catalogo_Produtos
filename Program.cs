@@ -68,7 +68,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "apicatalogo", Version = "v1" });
+    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "apicatalogo", Version = "v1" });
+    //c.SwaggerDoc("v2", new OpenApiInfo { Title = "apicatalogo", Version = "v2" });
+    // ------------------------------------------------------------------------------------------- INCLUINDO DOCUMENTAÇÃO ---------------------------------------------------
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "APICatalogo",
+        Description = "Catálogo de Produtos e Categorias",
+        TermsOfService = new Uri("https://macoratti.net/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "macoratti",
+            Email = "macoratti@yahoo.com",
+            Url = new Uri("https://macoratti.net"),
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Usar sobre LICX",
+            Url = new Uri("https://macoratti.net/license"),
+        }
+    });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -275,6 +295,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    //O código abaixo é desnecessário, basta o de cima 'app.UseSwaggerUI', somente para mostrar
+    //app.UseSwaggerUI(c =>
+    //{
+    //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "APICatalogo");
+    //});
+
     app.ConfigureExceptionHandler();
 }
 

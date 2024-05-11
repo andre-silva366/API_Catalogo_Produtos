@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace APICatalogo.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
+//[ApiExplorerSettings(IgnoreApi = true)]
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase

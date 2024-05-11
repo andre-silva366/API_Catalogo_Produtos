@@ -7,6 +7,7 @@ namespace APICatalogo.Controllers;
 [ApiController]
 [ApiVersion(3)]
 [ApiVersion(4)]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class TesteV3Controller : ControllerBase
 {
     [MapToApiVersion(3)]

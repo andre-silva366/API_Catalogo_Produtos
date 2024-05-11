@@ -12,7 +12,7 @@ using X.PagedList;
 
 namespace APICatalogo.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
+//[ApiExplorerSettings(IgnoreApi = true)]
 [Route("[controller]")]// rota = /produtos
 [ApiController]
 
