@@ -141,7 +141,7 @@ public class CategoriasController : ControllerBase
     }
 
 #pragma warning disable CS1591
-
+    [ApiConventionMethod(typeof(DefaultApiConventions),nameof(DefaultApiConventions.Put))]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<CategoriaDTO>> PutAsync(int id, CategoriaDTO categoriaDto)
     {
