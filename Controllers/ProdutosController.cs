@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using X.PagedList;
+using Microsoft.AspNetCore.Http;
 
 namespace APICatalogo.Controllers;
 
@@ -52,17 +53,29 @@ public class ProdutosController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = "UserOnly")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
     public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetAsync()
     {
-        var produtos = await _uof.ProdutoRepository.GetAllAsync();
-        if (produtos == null)
+        try
         {
-            return NotFound("Produtos não encontrados");
+            var produtos = await _uof.ProdutoRepository.GetAllAsync();
+            //throw new Exception();
+            if (produtos == null)
+            {
+                return NotFound("Produtos não encontrados");
+            }
+
+            var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
+
+            return Ok(produtosDto);
         }
-
-        var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
-
-        return Ok(produtosDto);
+        catch(Exception)
+        {
+            return BadRequest();
+        }
     }
 
     // Teste - número de produtos
@@ -117,6 +130,10 @@ public class ProdutosController : ControllerBase
     [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
     public async Task<ActionResult<ProdutoDTO>>  GetByIdAsync(int id)
     {
+        if(id < 0)
+        {
+            return BadRequest();
+        }
 
         var produto = await _uof.ProdutoRepository.GetAsync(p => p.ProdutoId == id);
 
@@ -207,7 +224,8 @@ public class ProdutosController : ControllerBase
 
         if (produtoDeletado is null)
         {
-            return StatusCode(500, $"Falha ao deletar o produto de id = {id}");
+            return NotFound();
+            //return StatusCode(500, $"Falha ao deletar o produto de id = {id}");
             
         }
         else
